@@ -146,13 +146,8 @@ namespace comm {
                 return false;
             }
 
-            virtual void onClientDisconnect(std::shared_ptr<Connection<T>> client) {
-
-            }
-
-            virtual void onCall(std::shared_ptr<Connection<T>> client, Message<T> &msg) {
-
-            }
+            virtual void onClientDisconnect(std::shared_ptr<Connection<T>> client) {}
+            virtual void onCall(std::shared_ptr<Connection<T>> client, Message<T> &msg) {}
     };
 
 }

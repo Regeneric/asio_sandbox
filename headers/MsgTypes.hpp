@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstdint>
-#include <vector>
+#include <array>
 #include <string>
 
 using Byte = uint8_t;
@@ -26,6 +26,4 @@ enum class MsgTypes : Dword {
 struct MessengerDesc {
     Dword ID = 0;
     Dword avatarID = 0;
-
-    std::vector<std::string> msgHistory;
 };

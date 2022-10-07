@@ -18,7 +18,7 @@ namespace comm {
 
         template<typename DT>
         friend Message<T> &operator << (Message<T> &msg, const DT &data) {
-            static_assert(std::is_standard_layout<DT>::value, "Data is too complex to be pushed into vector");
+            static_assert(std::is_trivially_copyable<DT>::value, "Data is too complex to be pushed into vector");
             
             size_t size = msg.body.size();
             msg.body.resize(msg.body.size() + sizeof(DT));
@@ -31,7 +31,7 @@ namespace comm {
 
         template<typename DT>
         friend Message<T> &operator >> (Message<T> &msg, DT &data) {
-            static_assert(std::is_standard_layout<DT>::value, "Data is too complex to be pushed into vector");
+            static_assert(std::is_trivially_copyable<DT>::value, "Data is too complex to be pushed into vector");
 
             size_t size = msg.body.size() - sizeof(DT);
 

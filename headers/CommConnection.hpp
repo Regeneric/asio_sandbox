@@ -1,6 +1,6 @@
 #pragma once 
 
-#define DEBUG    // DEBUG / NO_DEBUG
+#define NO_DEBUG    // DEBUG / NO_DEBUG
 
 #include "commons.hpp"
 #include "CommTSQ.hpp"
@@ -110,6 +110,7 @@ namespace comm {
                             } else addToInQu();
                         } else {
                             std::cout << "[" << rID << "] Read header fail!" << std::endl;
+                            std::cout << "[" << rID << "] " << ec.message() << std::endl;
                             rSocket.close(); 
                         }
 
@@ -140,6 +141,7 @@ namespace comm {
                             }
                         } else {
                             std::cout << "[" << rID << "] Write header fail!" << std::endl;
+                            std::cout << "[" << rID << "] " << ec.message() << std::endl;
                             rSocket.close();
                         }
 
@@ -167,6 +169,7 @@ namespace comm {
                         if(!ec) addToInQu();
                         else {
                             std::cout << "[" << rID << "] Read body fail!" << std::endl;
+                            std::cout << "[" << rID << "] " << ec.message() << std::endl;
                             rSocket.close();
                         }
 
@@ -189,6 +192,7 @@ namespace comm {
                             if(!rMessageOut.empty()) writeHeader();
                         } else {
                             std::cout << "[" << rID << "] Write body fail!" << std::endl;
+                            std::cout << "[" << rID << "] " << ec.message() << std::endl;
                             rSocket.close();
                         }
 
@@ -253,12 +257,12 @@ namespace comm {
                                         std::cout << "[DEBUG] CommConnection::readValidate() - handshakeIn == handshakeOut" << std::endl;
                                     #endif
 
-                                    std::cout << "Client validated (handshake validation success)" << std::endl;
+                                    std::cout << "[" << rID << "] Client validated (handshake validation success)" << std::endl;
                                     server->onClientValidate(this->shared_from_this());
 
                                     readHeader();
                                 } else {
-                                    std::cout << "Client disconnected (handshake validation fail)" << std::endl;
+                                    std::cout << "[" << rID << "] Client disconnected (handshake validation fail)" << std::endl;
                                     rSocket.close();
                                 }
                             } else {
@@ -276,7 +280,7 @@ namespace comm {
                                 writeValidate();
                             }
                         } else {
-                            std::cout << "Client disconnected (handshake validation fail)" << std::endl;
+                            std::cout << "[" << rID << "] Client disconnected (handshake validation fail)" << std::endl;
                             rSocket.close();
                         }
                     }

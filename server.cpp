@@ -22,7 +22,7 @@ protected:
 	}
 
 	void onClientDisconnect(std::shared_ptr<comm::Connection<MsgTypes>> client) override {
-
+		
 	}
 
 
@@ -39,12 +39,14 @@ protected:
 				msgID << md.ID;
 				callClient(client, msgID);
 
+				std::cout << "[" << md.ID << "] Client unique ID assigned" << std::endl;
+
 				comm::Message<MsgTypes> msgAdd;
 				msgAdd.header.id = MsgTypes::AddUser;
 				msgAdd << md;
 				callAll(msgAdd);
 
-				for(const auto &u : users) {
+				for(auto u : users) {
 					comm::Message<MsgTypes> msgAddAll;
 					msgAddAll.header.id = MsgTypes::AddUser;
 					msgAddAll << u.second;
@@ -52,9 +54,9 @@ protected:
 				}
 			} break;
 
-			case MsgTypes::ClientUnregister: {
+			// case MsgTypes::ClientUnregister: {
 
-			} break;
+			// } break;
 
 			case MsgTypes::UpdateUser: {
 				callAll(msg, client);

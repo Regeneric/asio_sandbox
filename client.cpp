@@ -17,10 +17,11 @@ public:
 
 
 auto main() -> int {
+    bool quit = false;
+
     Messenger client;
     client.connect("127.0.0.1", 60000);
 
-    bool quit = false;
     while(!quit) {
         if(client.status()) {
             while(!client.incoming().empty()) {
@@ -28,20 +29,17 @@ auto main() -> int {
 
                 switch(msg.header.id) {
                     case MsgTypes::ClientAccept: {
-                        std::cout << "Connection accepted" << std::endl;
-
+                        std::cout << "[CLIENT] Connection accepted" << std::endl;
                         comm::Message<MsgTypes> msg;
                         msg.header.id = MsgTypes::ClientRegister;
 
-                        client.messenger.msgHistory.resize(0);
                         msg << client.messenger;
-
                         client.send(msg);
                     } break;
-                
+
                     case MsgTypes::ClientID: {
                         msg >> client.msgID;
-                        std::cout << "Client ID assigned: " << client.msgID << std::endl;
+                        std::cout << "[" << client.msgID << "] Client ID assigned" << std::endl;
                     } break;
 
                     case MsgTypes::AddUser: {
@@ -50,14 +48,6 @@ auto main() -> int {
 
                         client.msgObjects.insert_or_assign(md.ID, md);
                         if(md.ID == client.msgID) client.waitForConn = false;
-
-                    } break;
-
-                    case MsgTypes::RemoveUser: {
-                        Dword remID = 0;
-                        msg >> remID;
-
-                        client.msgObjects.erase(remID);
                     } break;
 
                     case MsgTypes::UpdateUser: {
@@ -66,17 +56,25 @@ auto main() -> int {
 
                         client.msgObjects.insert_or_assign(md.ID, md);
                     } break;
+
+                    case MsgTypes::RemoveUser: {
+                        Dword remID = 0;
+                        msg >> remID;
+
+                        client.msgObjects.erase(remID);
+                        quit = true;
+                    } break;
                 }
+            
+                comm::Message<MsgTypes> msgComplete;
+                msg.header.id = MsgTypes::UpdateUser;
+                msg << client.msgObjects[client.msgID];
+                
+                client.send(msg);
             }
-        } 
-        
+        } else quit = true;
+
         // if(client.waitForConn) std::cout << "Waiting for connection..." << std::endl;
-    
-        comm::Message<MsgTypes> msg;
-        msg.header.id = MsgTypes::UpdateUser;
-        msg << client.msgObjects[client.msgID];
-        
-        client.send(msg);
     }
 
     return 0;
