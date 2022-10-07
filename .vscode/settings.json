@@ -95,5 +95,6 @@
         "queue": "cpp",
         "*.ipp": "cpp",
         "*.rh": "cpp"
-    }
+    },
+    "C_Cpp.errorSquiggles": "Disabled"
 }

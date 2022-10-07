@@ -1,6 +1,6 @@
 #pragma once 
 
-#define NO_DEBUG    // DEBUG / NO_DEBUG
+#define DEBUG    // DEBUG / NO_DEBUG
 
 #include "commons.hpp"
 #include "CommTSQ.hpp"
@@ -217,7 +217,7 @@ namespace comm {
                 // out = (out & 0x1337AF7A0420BDBA) >> 4 | (out & 0x4206921371337ABC) << 4;
                 // return out ^ 0xABCDEF123456AB12;
 
-				Qword out = input ^ 0xDEADBEEFC0DECAFE;
+                Qword out = input ^ 0xDEADBEEFC0DECAFE;
 				out = (out & 0xF0F0F0F0F0F0F0) >> 4 | (out & 0x0F0F0F0F0F0F0F) << 4;
 				return out ^ 0xC0DEFACE12345678;
             }
