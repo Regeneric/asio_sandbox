@@ -9,6 +9,7 @@ public:
 	MessageHandler(Word port) : comm::Server<MsgTypes>(port) {}
 
 	std::unordered_map<Dword, MessengerDesc> users;
+	std::vector<Dword> hardDisconnects;
 
 protected:
 	bool onClientConnect(std::shared_ptr<comm::Connection<MsgTypes>> client) override {
@@ -22,11 +23,30 @@ protected:
 	}
 
 	void onClientDisconnect(std::shared_ptr<comm::Connection<MsgTypes>> client) override {
-		
+		if(client) {
+			if(users.find(client->id()) == users.end()) {}	// Check if user with given ID has ever connected
+			
+			auto &pd = users[client->id()];
+			std::cout << "[HARD DISCONNECT] " + std::to_string(pd.ID) << std::endl;
+			
+			users.erase(client->id());
+			hardDisconnects.push_back(client->id());
+		}
 	}
 
 
 	void onCall(std::shared_ptr<comm::Connection<MsgTypes>> client, comm::Message<MsgTypes> &msg) override {
+		if(!hardDisconnects.empty()) {
+			for(auto pid : hardDisconnects) {
+				comm::Message<MsgTypes> msg;
+				msg.header.id = MsgTypes::RemoveUser;
+				msg << pid;
+				
+				std::cout << "[" << pid << "] User removed" << std::endl;
+				callAll(msg);
+			} hardDisconnects.clear();
+		}
+
 		switch(msg.header.id) {
 			case MsgTypes::ClientRegister: {
 				MessengerDesc md;
