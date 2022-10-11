@@ -20,10 +20,14 @@ enum class MsgTypes : Dword {
 
     AddUser,
     RemoveUser,
-    UpdateUser
+    UpdateUser,
+
+    MsgSent,
 };
 
 struct MessengerDesc {
     Dword ID = 0;
     Dword avatarID = 0;
+
+    // char message[1024] = "";
 };

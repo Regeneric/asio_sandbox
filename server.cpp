@@ -60,13 +60,15 @@ protected:
 				callClient(client, msgID);
 
 				std::cout << "[" << md.ID << "] Client unique ID assigned" << std::endl;
+				std::cout << "[SERVER] List of registered users: " << std::endl;
+				for(const auto &u : users) std::cout << u.first << std::endl;
 
 				comm::Message<MsgTypes> msgAdd;
 				msgAdd.header.id = MsgTypes::AddUser;
 				msgAdd << md;
 				callAll(msgAdd);
 
-				for(auto u : users) {
+				for(const auto &u : users) {
 					comm::Message<MsgTypes> msgAddAll;
 					msgAddAll.header.id = MsgTypes::AddUser;
 					msgAddAll << u.second;
@@ -74,6 +76,13 @@ protected:
 				}
 			} break;
 
+			// case MsgTypes::MsgSent: {
+			// 	MessengerDesc md;
+			// 	msg >> md;
+
+			// 	std::cout << "[" + md.ID << "] " << md.message << std::endl;
+			// } break;
+			
 			// case MsgTypes::ClientUnregister: {
 
 			// } break;
